@@ -37,9 +37,13 @@ function fish_prompt -d "Simple Fish Prompt"
     # Current working directory
     #
     set -l pwd_glyph " in "
+    set -l pwd_venv_glyph "venv "
     set -l pwd_string (echo $PWD | sed 's|^'$HOME'\(.*\)$|~\1|')
 
     __print_color ffffff "$pwd_glyph"
+    if test -n "$VIRTUAL_ENV"
+        __print_color 5DAE8B "$pwd_venv_glyph"
+    end
     __print_color 5DAE8B "$pwd_string"
 
 
@@ -52,20 +56,6 @@ function fish_prompt -d "Simple Fish Prompt"
 
         __print_color ffffff "$git_glyph"
         __print_color 6597ca "$branch_name"
-
-        if git_is_touched
-            if git_is_staged
-                if git_is_dirty
-                    set git_branch_glyph " [±]"
-                else
-                    set git_branch_glyph " [+]"
-                end
-            else
-                set git_branch_glyph " [?]"
-            end
-        end
-
-        __print_color 6597ca "$git_branch_glyph"
 
         if __git_upstream_configured
              set -l git_ahead (command git rev-list --left-right --count HEAD...@"{u}" ^ /dev/null | awk '
